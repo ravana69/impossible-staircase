@@ -1,0 +1,25 @@
+input(type="checkbox",id="isRotated")
+label(for="isRotated").container
+	div.surface
+		div.ball
+			div.ball-shadow
+			- for (var l = 0;l < 20;++l) {
+				div.ball-layer
+			- }
+		- for (var s = 1;s <= 14;++s) {
+			div(class="step s" + s)
+				div.step-inner
+					div.front
+					div.top
+					div.left
+					div.right
+		- }
+		div.belt
+			div.belt-inner
+			
+	svg(version="1.1",class="turnLeft",x="0px",y="0px",width="118px",height="44.333px",viewBox="0 0 118 44.333",enable-background="new 0 0 118 44.333")
+			path(fill="none",stroke="#fff",stroke-width="10",d="M112.825,6.933 c-22.242,41.359-85.908,40.241-106.483,0")
+			polyline(fill="none",stroke="#fff",stroke-width="10",points="36.653,11.912 6.342,6.933 6.342,41")
+	svg(version="1.1",class="turnRight",x="0px",y="0px",width="118px",height="44.333px",viewBox="0 0 118 44.333",enable-background="new 0 0 118 44.333")
+			path(fill="none",stroke="#fff",stroke-width="10",d="M112.825,6.933 c-22.242,41.359-85.908,40.241-106.483,0")
+			polyline(fill="none",stroke="#fff",stroke-width="10",points="36.653,11.912 6.342,6.933 6.342,41")

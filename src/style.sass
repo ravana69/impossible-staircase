@@ -1,0 +1,264 @@
+$sqSize: 50px
+$xSpaces: 6
+$ySpaces: 6
+$ballColor: #c22
+$ballLayers: 20
+$ballDur: 3s
+$turnDur: 0.6s
+$steps: 14
+$stepInc: 1 / ($steps / (2 + 1 / $steps) - 1)
+$stepPer: 100% / $steps
+$firstStepH: 2
+
+// colors
+$stepColor1: #fff
+$stepColor2: #888
+$stepColor3: #555
+
+@mixin placeBall($x, $y, $z)
+	transform: translate3d(1em*($x - 1), 1em*($y - 1), (1em*$z) + 0.5em)
+	
+@mixin placeStep($x, $y, $z, $h)
+	transform: translate3d(1em*($x - 1), 1em*($y - 1), (1em*$z) + (1em*($h - 1)))
+	.step-inner div
+		&.top
+			background: $stepColor1
+		&.front, &.left, &.right
+			height: 1em * $h
+		&.front
+			background: $stepColor2
+		&.left, &.right
+			background: $stepColor3
+
+body
+	background: #000
+	font-size: $sqSize
+	display: flex
+	display: -webkit-flex
+	justify-content: center
+	-webkit-justify-content: center
+	align-items: center
+	-webkit-align-items: center
+	height: 100vh
+	overflow: hidden
+	
+input
+	display: none
+	top: 0
+	&:not(:checked)
+		~ .container .surface:hover ~ .turnLeft
+			visibility: visible
+	&:checked
+		~ .container
+			.surface:hover ~ .turnRight
+				visibility: visible
+			> .surface
+				transform: rotateX(60deg) rotateZ(-45deg)
+				.step-inner div
+					&.front
+						background: $stepColor3
+					&.left, &.right
+						background: $stepColor2
+
+svg
+	position: absolute
+	bottom: 0%
+	left: calc(50% - 1.18em)
+	opacity: 0.5
+	visibility: hidden
+	z-index: 99
+	
+.turnRight
+	transform: scale(-1,1)
+		
+.container
+	width: 1em * $xSpaces
+	height: 1em * $ySpaces + 0.3em
+	transform-style: preserve-3d
+	
+.surface
+	//background-image: repeating-linear-gradient(transparent, transparent calc(1em - 1px), #fff calc(1em - 1px), #fff 1em), repeating-linear-gradient(90deg, transparent, transparent calc(1em - 1px), #fff calc(1em - 1px), #fff 1em)
+	width: 1em * $xSpaces
+	height: 1em * $ySpaces
+	margin: auto
+	transform-style: preserve-3d
+	transform: rotateX(60deg) rotateZ(45deg)
+	transition: transform $turnDur linear
+	will-change: transform
+
+.ball,
+.step,
+.belt,
+.belt-inner
+	transform-style: preserve-3d
+	
+.ball,
+.ball-shadow,
+.ball-layer,
+.step-inner div,
+.belt,
+.belt-inner
+	position: absolute
+	
+.ball,
+.ball-shadow,
+.ball-layer,
+.step-inner div
+	width: 1em
+	height: 1em
+	
+.ball
+	@include placeBall(1,1,$firstStepH)
+	will-change: transform
+	animation: rollBall $ballDur linear infinite
+	
+.ball-shadow,
+.ball-layer
+	border-radius: 50%
+	
+.ball-shadow
+	background: radial-gradient(#000 50%, transparent 75%, transparent)
+	opacity: 0.4
+	transform: translateZ(-0.5em)
+	
+.ball-layer
+	background: $ballColor
+	@for $b from 1 through $ballLayers
+		&:nth-of-type(#{$b})
+			@if $b <= ($ballLayers / 2)
+				transform: rotateX(360deg/$ballLayers * ($b - 1))
+			@else
+				transform: rotateY(360deg/$ballLayers * ($b - 1))
+	
+.step-inner
+	position: relative
+	width: 1em
+	transform-style: preserve-3d
+	transform: rotateX(-90deg) translateZ(1em)
+	div
+		transition: background $turnDur linear
+	
+.back
+	transform: translateZ(-1em) rotateY(180deg)
+.right
+	transform: rotateY(-270deg) translateX(1em)
+	transform-origin: top right
+.left
+	transform: rotateY(270deg) translateX(-1em)
+	transform-origin: center left
+.top
+	transform: rotateX(-90deg) translateY(0)
+	transform-origin: top center
+.front
+	transform: translateZ(0)
+		
+/* Steps */
+.s1
+	@include placeStep(1, 1, 1, $firstStepH)
+.s2
+	@include placeStep(1, 2, 1, $firstStepH + $stepInc)
+.s3
+	@include placeStep(1, 3, 1, $firstStepH + $stepInc * 2)
+.s4
+	@include placeStep(1, 4, 1, $firstStepH + $stepInc * 3)
+.s5
+	@include placeStep(1, 5, 1, $firstStepH + $stepInc * 4)
+.s6
+	@include placeStep(1, 6, 1, $firstStepH + $stepInc * 5)
+.s7
+	@include placeStep(2, 6, 1, $firstStepH + $stepInc * 6)
+.s8
+	@include placeStep(3, 6, 1, $firstStepH + $stepInc * 7)
+.s9
+	@include placeStep(4, 6, 1, $firstStepH + $stepInc * 8)
+.s10
+	@include placeStep(5, 6, 1, $firstStepH + $stepInc * 9)
+.s11
+	@include placeStep(6, 6, 1, $firstStepH + $stepInc * 10)
+.s12
+	@include placeStep(6, 5, 1, $firstStepH + $stepInc * 11)
+.s13
+	@include placeStep(6, 4, 1, $firstStepH + $stepInc * 12)
+.s14
+	@include placeStep(5, 4, 1, $firstStepH + $stepInc * 13)
+		
+.belt
+	width: 3.85em
+	height: 1em
+	transform: translate3d(1em,0,2em - (1em*$stepInc))
+	
+.belt-inner
+	background-image: linear-gradient(90deg,#666,#333 0.08em, #888 0.08em, #888 0.14em, #333 0.14em, #666 0.2em, #666 1em)
+	background-position: 0 0
+	background-size: 1em 1em
+	width: 100%
+	height: 100%
+	transform-origin: 0 0
+	transform: rotateY(-39deg) skewY(38deg)
+	animation: runBelt $ballDur/25 linear infinite
+		
+@keyframes rollBall
+	from
+		@include placeBall(1,1,$firstStepH)
+	#{$stepPer*0.6}
+		@include placeBall(4.6,4,$firstStepH + $stepInc * 14)
+	#{$stepPer*1}
+		@include placeBall(5,4,$firstStepH + $stepInc * 13)
+	#{$stepPer*1.6}
+		@include placeBall(5.6,4,$firstStepH + $stepInc * 13)
+	#{$stepPer*2}
+		@include placeBall(6,4,$firstStepH + $stepInc * 12)
+	#{$stepPer*2.6}
+		@include placeBall(6,4.6,$firstStepH + $stepInc * 12)
+	#{$stepPer*3}
+		@include placeBall(6,5,$firstStepH + $stepInc * 11)
+	#{$stepPer*3.6}
+		@include placeBall(6,5.6,$firstStepH + $stepInc * 11)
+	#{$stepPer*4}
+		@include placeBall(6,6,$firstStepH + $stepInc * 10)
+	#{$stepPer*4.6}
+		@include placeBall(5.4,6,$firstStepH + $stepInc * 10)
+	#{$stepPer*5}
+		@include placeBall(5,6,$firstStepH + $stepInc * 9)
+	#{$stepPer*5.6}
+		@include placeBall(4.4,6,$firstStepH + $stepInc * 9)
+	#{$stepPer*6}
+		@include placeBall(4,6,$firstStepH + $stepInc * 8)
+	#{$stepPer*6.6}
+		@include placeBall(3.4,6,$firstStepH + $stepInc * 8)
+	#{$stepPer*7}
+		@include placeBall(3,6,$firstStepH + $stepInc * 7)
+	#{$stepPer*7.6}
+		@include placeBall(2.4,6,$firstStepH + $stepInc * 7)
+	#{$stepPer*8}
+		@include placeBall(2,6,$firstStepH + $stepInc * 6)
+	#{$stepPer*8.6}
+		@include placeBall(1.4,6,$firstStepH + $stepInc * 6)
+	#{$stepPer*9}
+		@include placeBall(1,6,$firstStepH + $stepInc * 5)
+	#{$stepPer*9.6}
+		@include placeBall(1,5.4,$firstStepH + $stepInc * 5)
+	#{$stepPer*10}
+		@include placeBall(1,5,$firstStepH + $stepInc * 4)
+	#{$stepPer*10.6}
+		@include placeBall(1,4.4,$firstStepH + $stepInc * 4)
+	#{$stepPer*11}
+		@include placeBall(1,4,$firstStepH + $stepInc * 3)
+	#{$stepPer*11.6}
+		@include placeBall(1,3.4,$firstStepH + $stepInc * 3)
+	#{$stepPer*12}
+		@include placeBall(1,3,$firstStepH + $stepInc * 2)
+	#{$stepPer*12.6}
+		@include placeBall(1,2.4,$firstStepH + $stepInc * 2)
+	#{$stepPer*13}
+		@include placeBall(1,2,$firstStepH + $stepInc)
+	#{$stepPer*13.6}
+		@include placeBall(1,1.4,$firstStepH + $stepInc)
+	to
+		@include placeBall(1,1,$firstStepH)
+			
+@keyframes runBelt
+	from
+		background-position: 0 0
+	to
+		background-position: 1em 0
